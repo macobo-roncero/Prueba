@@ -1,0 +1,62 @@
+---
+
+- connection: network_cli
+  gather_facts: false
+  hosts: NEXUS
+  
+  vars_files:
+     - "{{ plantilla }}"
+     - "{{ password }}"
+  tasks: 
+    
+    - name: "Configurando credenciales acceso"
+      include_vars: "{{ password }}"
+    
+    - name: "Definiendo perfil acceso"
+      set_fact:
+          ansible_user: "{{ creds['username'] }}"
+          ansible_ssh_pass: "{{ creds['password'] }}"     
+
+    - name: "Interfaces Up"
+      register: int_up
+      nxos_command:
+        commands:
+          - command: show interface status up      
+            output: json
+   
+    - name: "Registrando Datos Up"
+      set_fact:
+        Datos_Up: "{{ int_up.stdout[0].TABLE_interface.ROW_interface }}"
+
+    - name: "Interfaces Down"
+      register: int_Down
+      nxos_command:
+        commands:
+          - command: show interface status Down      
+            output: json
+
+    - name: "Registrando Datos Down"
+      set_fact:
+        Datos_Down: "{{ int_Down.stdout[0].TABLE_interface.ROW_interface }}"    
+
+    - name: "Mostrando Interfaces Up"
+      debug:
+        msg: "\n Inteface {{item.interface}} is enabled, reason {{item.state}}, with type {{item.type}}"
+      loop: "{{Datos_Up}}"
+      when:
+        - not "Vlan" in item.interface
+        - not "mgmt0" in item.interface
+        - not "Po" in item.interface
+        - not "nve" in item.interface
+        - not "Lo" in item.interface
+        
+    - name: "Mostrando Interfaces Down"
+      debug:
+        msg: "\n Inteface {{item.interface}} is disabled, reason {{item.state}}, with type {{item.type}}"
+      loop: "{{Datos_Down}}"
+      when:
+        - not "Vlan" in item.interface
+        - not "mgmt0" in item.interface
+        - not "Po" in item.interface
+        - not "nve" in item.interface 
+        - not "Lo" in item.interface
