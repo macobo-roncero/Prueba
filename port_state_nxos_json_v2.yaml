@@ -9,13 +9,13 @@
 #     - "{{ password }}"
   tasks: 
     
-    - name: "Configurando credenciales acceso"
-      include_vars: "{{ password }}"
+#    - name: "Configurando credenciales acceso"
+#      include_vars: "{{ password }}"
     
-    - name: "Definiendo perfil acceso"
-      set_fact:
-          ansible_user: "{{ creds['username'] }}"
-          ansible_ssh_pass: "{{ creds['password'] }}"     
+#    - name: "Definiendo perfil acceso"
+#      set_fact:
+#          ansible_user: "{{ creds['username'] }}"
+#          ansible_ssh_pass: "{{ creds['password'] }}"     
 
     - name: "Interfaces Up"
       register: int_up
