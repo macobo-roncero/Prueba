@@ -2,11 +2,11 @@
 
 - connection: network_cli
   gather_facts: false
-  hosts: NEXUS
+  hosts: 172.23.152.4
   
-  vars_files:
-     - "{{ plantilla }}"
-     - "{{ password }}"
+#  vars_files:
+#     - "{{ plantilla }}"
+#     - "{{ password }}"
   tasks: 
     
     - name: "Configurando credenciales acceso"
